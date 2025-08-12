@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
+#include "scoreboard.h"
 
 int main() {
   constexpr std::size_t kFramesPerSecond{60};
@@ -11,12 +12,16 @@ int main() {
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
 
+  Scoreboard scoreboard;  // STUDENT CODE
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
   Game game(kGridWidth, kGridHeight);
   game.Run(controller, renderer, kMsPerFrame);
+  scoreboard.UpdateScore(game.GetScore());  // STUDENT CODE
   std::cout << "Game has terminated successfully!\n";
-  std::cout << "Score: " << game.GetScore() << "\n";
-  std::cout << "Size: " << game.GetSize() << "\n";
+  std::cout << "User  : " << scoreboard.GetUsername() << "\n";
+  std::cout << "Score : " << game.GetScore() << "\n";
+  std::cout << "Size  : " << game.GetSize() << "\n";
+  scoreboard.WriteToTxt();  // STUDENT CODE
   return 0;
 }
