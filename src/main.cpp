@@ -4,7 +4,8 @@
 #include "renderer.h"
 #include "scoreboard.h"
 
-int main() {
+int main()
+{
   constexpr std::size_t kFramesPerSecond{60};
   constexpr std::size_t kMsPerFrame{1000 / kFramesPerSecond};
   constexpr std::size_t kScreenWidth{640};
@@ -15,13 +16,19 @@ int main() {
   Scoreboard scoreboard;  // STUDENT CODE
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
+
   Game game(kGridWidth, kGridHeight);
   game.Run(controller, renderer, kMsPerFrame);
-  scoreboard.UpdateScore(game.GetScore());  // STUDENT CODE
+
   std::cout << "Game has terminated successfully!\n";
   std::cout << "User  : " << scoreboard.GetUsername() << "\n";
   std::cout << "Score : " << game.GetScore() << "\n";
   std::cout << "Size  : " << game.GetSize() << "\n";
-  scoreboard.WriteToTxt();  // STUDENT CODE
+
+  // STUDENT CODE (begin)
+  scoreboard.UpdateScore(game.GetScore());
+  scoreboard.WriteToTxt();
+  // STUDENT CODE (end)
+
   return 0;
 }
