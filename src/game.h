@@ -5,7 +5,6 @@
 #include <random>
 #include <vector>
 #include "obstacle.h"
-#include "sdl_util.h"
 #include "snake.h"
 #include "controller.h"
 #include "renderer.h"
