@@ -16,14 +16,6 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   , random_h(0, static_cast<int>(grid_height - 1))
 {}
 
-// STUDENT CODE (begin)
-Game::~Game()
-{
-  scoreboard.UpdateScore(score);
-  scoreboard.WriteToTxt();
-}
-// STUDENT CODE (end)
-
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration)
 {
@@ -70,6 +62,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+
+  scoreboard.UpdateScore(score);  // STUDENT CODE
 }
 
 void Game::PlaceFood()
@@ -103,7 +97,7 @@ void Game::PlaceObstacles()
   }
 
   obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 8));
-  obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 9));
+  // obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 9));
   for (const auto &o : obstacles) {
     std::cout << "Obstacle(" << o->get_id() << ") at "
               << "(" << o->get_x() << "," << o->get_y() << ")\n";

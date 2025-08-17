@@ -24,6 +24,7 @@ int main()
   std::cout << "User  : " << game->GetUsername() << "\n";
   std::cout << "Score : " << game->GetScore() << "\n";
   std::cout << "Size  : " << game->GetSize() << "\n";
+  game->WriteScore();
 
   return 0;
 }

@@ -14,7 +14,7 @@ class Game : public std::enable_shared_from_this<Game>
 {
 public:
   Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles);
-  ~Game();
+  ~Game() = default;  // FIXME: why we cannot see ~Game() called in main thread?
 
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);
@@ -30,6 +30,8 @@ public:
 
   bool IsObstacle(int x, int y) const;  // check (x,y) is an obstacle or not
   bool ObstacleCell(int x, int y);      // IsObstacle + mutex lock
+
+  void WriteScore() { scoreboard.WriteToTxt(); };
   // STUDENT CODE (end)
 
 private:

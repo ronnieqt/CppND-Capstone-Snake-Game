@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 #include <algorithm>
+#include <random>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -61,8 +62,10 @@ public:
 
   MovingObstacle(std::shared_ptr<Game> game, int x, int y)
     : ObstacleBase(x, y)
+    , m_eng(m_dev())
+    , m_rand(0, 3)
     , m_game{game}
-    , m_direction{Direction::right}  // TODO: randomize initial direction
+    , m_direction{static_cast<Direction>(m_rand(m_eng))}  // TODO: randomize initial direction
     , m_speed{0.1}
   {}
   ~MovingObstacle()
@@ -83,6 +86,10 @@ private:
   // TODO: choose direction is a smart way
 
 private:
+  std::random_device m_dev;
+  std::mt19937 m_eng;
+  std::uniform_int_distribution<int> m_rand;
+
   std::shared_ptr<Game> m_game;
   std::vector<std::thread> m_threads;
   Direction m_direction;
