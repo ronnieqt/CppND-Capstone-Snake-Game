@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <SDL_rect.h>
 #include <iostream>
 #include <string>
 
@@ -38,7 +39,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food) {
+void Renderer::Render(const Snake snake, const std::set<SDL_Point>& obstacles, const SDL_Point& food) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -46,6 +47,16 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
   SDL_RenderClear(sdl_renderer);
+
+  // STUDENT CODE (begin)
+  // Render obstacles (grey)
+  SDL_SetRenderDrawColor(sdl_renderer, 0x80, 0x80, 0x80, 0xFF);
+  for (const auto& p : obstacles) {
+    block.x = p.x * block.w;
+    block.y = p.y * block.w;
+    SDL_RenderFillRect(sdl_renderer, &block);
+  }
+  // STUDENT CODE (end)
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
@@ -66,7 +77,8 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   block.y = static_cast<int>(snake.head_y) * block.h;
   if (snake.alive) {
     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
-  } else {
+  }
+  else {
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);

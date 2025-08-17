@@ -1,13 +1,15 @@
 #include "game.h"
-#include <iostream>
-#include "SDL.h"
+#include <SDL_rect.h>
+#include <algorithm>
 
-Game::Game(std::size_t grid_width, std::size_t grid_height)
-  : snake(grid_width, grid_height)
+Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
+  : snake(this, grid_width, grid_height)
+  , nb_obstacles{nb_obstacles}
   , engine(dev())
   , random_w(0, static_cast<int>(grid_width - 1))
   , random_h(0, static_cast<int>(grid_height - 1))
 {
+  PlaceObstacles();
   PlaceFood();
 }
 
@@ -27,7 +29,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, food);
+    renderer.Render(snake, obstacles, food);
 
     frame_end = SDL_GetTicks();
 
@@ -56,14 +58,34 @@ void Game::PlaceFood()
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing food.
-    if (!snake.SnakeCell(x, y)) {
+    // Check that the location is not occupied by a snake/obstacle item before placing food.
+    if (!ObstacleCell(x, y) && !snake.SnakeCell(x, y)) {  // STUDENT CODE
       food.x = x;
       food.y = y;
       return;
     }
   }
 }
+
+// STUDENT CODE (begin)
+void Game::PlaceObstacles()
+{
+  int x{0}, y{0};
+  for (int i = 0; i < nb_obstacles; ++i) {
+    x = random_w(engine);
+    y = random_h(engine);
+    obstacles.insert(SDL_Point{x, y});
+  }
+}
+
+bool Game::ObstacleCell(int x, int y) const
+{
+  const auto it = std::find_if(
+    obstacles.cbegin(), obstacles.cend(),
+    [x,y](const SDL_Point& p){ return (x == p.x) && (y == p.y); });
+  return it != obstacles.cend();
+}
+// STUDENT CODE (end)
 
 void Game::Update()
 {

@@ -1,6 +1,6 @@
 #include "snake.h"
+#include "game.h"
 #include <cmath>
-#include <iostream>
 
 void Snake::Update()
 {
@@ -39,9 +39,14 @@ void Snake::UpdateHead()
   // Wrap the Snake around to the beginning if going off of the screen.
   head_x = fmod(head_x + grid_width , grid_width);
   head_y = fmod(head_y + grid_height, grid_height);
+
+  // STUDENT CODE: Check if the snake has died (by hitting an obstacle)
+  if (game->ObstacleCell(static_cast<int>(head_x), static_cast<int>(head_y))) {
+    alive = false;
+  }
 }
 
-void Snake::UpdateBody(SDL_Point &curr_head_cell, SDL_Point &prev_head_cell)
+void Snake::UpdateBody(SDL_Point& curr_head_cell, SDL_Point& prev_head_cell)
 {
   // Add previous head location to vector
   body.push_back(prev_head_cell);
@@ -55,8 +60,8 @@ void Snake::UpdateBody(SDL_Point &curr_head_cell, SDL_Point &prev_head_cell)
     size++;
   }
 
-  // Check if the snake has died.
-  for (auto const &item : body) {
+  // Check if the snake has died (by eating its own body)
+  for (const auto& item : body) {
     if (curr_head_cell.x == item.x && curr_head_cell.y == item.y) {
       alive = false;
     }
@@ -71,7 +76,7 @@ bool Snake::SnakeCell(int x, int y)
   if (x == static_cast<int>(head_x) && y == static_cast<int>(head_y)) {
     return true;
   }
-  for (auto const& item : body) {
+  for (const auto& item : body) {
     if (x == item.x && y == item.y) {
       return true;
     }

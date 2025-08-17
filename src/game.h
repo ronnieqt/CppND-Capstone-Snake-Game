@@ -2,23 +2,32 @@
 #define GAME_H
 
 #include <random>
-#include "SDL.h"
+#include <set>
+#include "sdl_util.h"
+#include "snake.h"
 #include "controller.h"
 #include "renderer.h"
-#include "snake.h"
 
 class Game
 {
 public:
-  Game(std::size_t grid_width, std::size_t grid_height);
+  Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles);
+
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);
+
   int GetScore() const;
   int GetSize() const;
+
+  bool ObstacleCell(int x, int y) const;  // STUDENT CODE
 
 private:
   Snake snake;
   SDL_Point food;
+  // STUDENT CODE (begin)
+  int nb_obstacles;
+  std::set<SDL_Point> obstacles;
+  // STUDENT CODE (end)
 
   std::random_device dev;
   std::mt19937 engine;
@@ -28,6 +37,7 @@ private:
   int score{0};
 
   void PlaceFood();
+  void PlaceObstacles();  // STUDENT CODE
   void Update();
 };
 

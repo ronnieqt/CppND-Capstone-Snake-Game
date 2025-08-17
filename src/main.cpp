@@ -12,12 +12,13 @@ int main()
   constexpr std::size_t kScreenHeight{640};
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
+  constexpr int nbObstacles{static_cast<int>(0.012*kGridWidth*kGridWidth)};
 
   Scoreboard scoreboard;  // STUDENT CODE
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
 
-  Game game(kGridWidth, kGridHeight);
+  Game game(kGridWidth, kGridHeight, nbObstacles);
   game.Run(controller, renderer, kMsPerFrame);
 
   std::cout << "Game has terminated successfully!\n";
