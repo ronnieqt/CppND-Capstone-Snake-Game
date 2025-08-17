@@ -14,7 +14,7 @@ class Renderer {
   ~Renderer();
 
   void Render(const Snake snake, const std::vector<std::unique_ptr<ObstacleBase>>& obstacles, const SDL_Point& food);
-  void UpdateWindowTitle(int score, int fps);
+  void UpdateWindowTitle(const std::string& user, int score, int fps);  // STUDENT CODE
 
  private:
   SDL_Window *sdl_window;

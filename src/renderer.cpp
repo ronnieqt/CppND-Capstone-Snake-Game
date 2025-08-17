@@ -87,7 +87,7 @@ void Renderer::Render(const Snake snake, const std::vector<std::unique_ptr<Obsta
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+void Renderer::UpdateWindowTitle(const std::string& user, int score, int fps) {  // STUDENT CODE
+  std::string title{"Snake Score (" + user + "): " + std::to_string(score) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
