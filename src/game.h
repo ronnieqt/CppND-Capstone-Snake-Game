@@ -44,9 +44,11 @@ private:
   // STUDENT CODE (end)
 
   std::random_device dev;
-  std::mt19937 engine;
+  std::mt19937 engine_i;  // for obstacle grids generation
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
+  std::mt19937 engine_f;  // for fixed/moving obstacle classification
+  std::uniform_real_distribution<float> random_f;
 
   bool running{false};
   int score{0};

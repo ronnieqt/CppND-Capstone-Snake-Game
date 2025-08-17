@@ -11,9 +11,11 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   : snake(this, grid_width, grid_height)
   , scoreboard()  // STUDENT CODE
   , nb_obstacles{nb_obstacles}
-  , engine(dev())
+  , engine_i(dev())
   , random_w(0, static_cast<int>(grid_width - 1))
   , random_h(0, static_cast<int>(grid_height - 1))
+  , engine_f(dev())
+  , random_f(0.0, 1.0)
 {}
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -70,8 +72,8 @@ void Game::PlaceFood()
 {
   int x, y;
   while (true) {
-    x = random_w(engine);
-    y = random_h(engine);
+    x = random_w(engine_i);
+    y = random_h(engine_i);
     // Check that the location is not occupied by a snake/obstacle item before placing food.
     if (!ObstacleCell(x, y) && !snake.SnakeCell(x, y)) {  // STUDENT CODE
       food.x = x;
@@ -87,10 +89,15 @@ void Game::PlaceObstacles()
   int x{0}, y{0};
   for (int i = 0; i < nb_obstacles; ++i) {
     while (true) {
-      x = random_w(engine);
-      y = random_h(engine);
+      x = random_w(engine_i);
+      y = random_h(engine_i);
       if (!ObstacleCell(x, y)) {  // obstacles are placed before food and snake
-        obstacles.emplace_back(std::make_unique<FixedObstacle>(x, y));
+        if (random_f(engine_f) < 0.2) {  // FIXME: make this param configurable
+          obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), x, y));
+        }
+        else {
+          obstacles.emplace_back(std::make_unique<FixedObstacle>(x, y));
+        }
         break;
       }
     }
