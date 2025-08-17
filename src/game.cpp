@@ -1,9 +1,12 @@
 #include "game.h"
+#include "scoreboard.h"
 #include <SDL_rect.h>
 #include <algorithm>
+#include <memory>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   : snake(this, grid_width, grid_height)
+  , scoreboard{std::make_unique<Scoreboard>()}  // STUDENT CODE
   , nb_obstacles{nb_obstacles}
   , engine(dev())
   , random_w(0, static_cast<int>(grid_width - 1))
@@ -12,6 +15,14 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   PlaceObstacles();
   PlaceFood();
 }
+
+// STUDENT CODE (begin)
+Game::~Game()
+{
+  scoreboard->UpdateScore(score);
+  scoreboard->WriteToTxt();
+}
+// STUDENT CODE (end)
 
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration)
@@ -108,3 +119,4 @@ void Game::Update()
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+std::string Game::GetUsername() const { return scoreboard->GetUsername(); }

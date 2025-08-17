@@ -2,7 +2,6 @@
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
-#include "scoreboard.h"
 
 int main()
 {
@@ -12,24 +11,18 @@ int main()
   constexpr std::size_t kScreenHeight{640};
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
-  constexpr int nbObstacles{static_cast<int>(0.012*kGridWidth*kGridWidth)};
+  constexpr int nbObstacles{static_cast<int>(0.012*kGridWidth*kGridWidth)};  // STUDENT CODE
 
-  Scoreboard scoreboard;  // STUDENT CODE
+  Game game(kGridWidth, kGridHeight, nbObstacles);
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
 
-  Game game(kGridWidth, kGridHeight, nbObstacles);
   game.Run(controller, renderer, kMsPerFrame);
 
   std::cout << "Game has terminated successfully!\n";
-  std::cout << "User  : " << scoreboard.GetUsername() << "\n";
+  std::cout << "User  : " << game.GetUsername() << "\n";
   std::cout << "Score : " << game.GetScore() << "\n";
   std::cout << "Size  : " << game.GetSize() << "\n";
-
-  // STUDENT CODE (begin)
-  scoreboard.UpdateScore(game.GetScore());
-  scoreboard.WriteToTxt();
-  // STUDENT CODE (end)
 
   return 0;
 }
