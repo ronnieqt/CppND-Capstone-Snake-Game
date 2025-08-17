@@ -1,6 +1,6 @@
 // STUDENT CODE: utilities for SDL
 
-#include <SDL_rect.h>
+#include <SDL.h>
 
 // ============================================================
 // Utils to compare 2 SDL_Points

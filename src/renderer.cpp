@@ -1,5 +1,5 @@
 #include "renderer.h"
-#include <SDL_rect.h>
+#include <SDL.h>
 #include <iostream>
 #include <string>
 
@@ -39,7 +39,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(const Snake snake, const std::set<SDL_Point>& obstacles, const SDL_Point& food) {
+void Renderer::Render(const Snake snake, const std::vector<std::unique_ptr<ObstacleBase>>& obstacles, const SDL_Point& food) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -51,9 +51,9 @@ void Renderer::Render(const Snake snake, const std::set<SDL_Point>& obstacles, c
   // STUDENT CODE (begin)
   // Render obstacles (grey)
   SDL_SetRenderDrawColor(sdl_renderer, 0x80, 0x80, 0x80, 0xFF);
-  for (const auto& p : obstacles) {
-    block.x = p.x * block.w;
-    block.y = p.y * block.w;
+  for (const auto& o : obstacles) {
+    block.x = o->get_x() * block.w;
+    block.y = o->get_y() * block.w;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
   // STUDENT CODE (end)

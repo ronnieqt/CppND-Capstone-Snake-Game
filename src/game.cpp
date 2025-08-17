@@ -1,8 +1,10 @@
 #include "game.h"
+#include "obstacle.h"
 #include "scoreboard.h"
 #include <SDL_rect.h>
 #include <algorithm>
 #include <memory>
+#include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   : snake(this, grid_width, grid_height)
@@ -33,6 +35,12 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
+
+  // STUDENT CODE (begin)
+  for (const auto &obst : obstacles) {
+    obst->run();  // launch threads for moving obstacles
+  }
+  // STUDENT CODE (end)
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -83,17 +91,21 @@ void Game::PlaceObstacles()
 {
   int x{0}, y{0};
   for (int i = 0; i < nb_obstacles; ++i) {
-    x = random_w(engine);
-    y = random_h(engine);
-    obstacles.insert(SDL_Point{x, y});
+    while (true) {
+      x = random_w(engine);
+      y = random_h(engine);
+      if (!ObstacleCell(x, y)) {  // obstacles are placed before food and snake
+        obstacles.emplace_back(std::make_unique<FixedObstacle>(x, y));
+        break;
+      }
+    }
   }
 }
 
 bool Game::ObstacleCell(int x, int y) const
 {
-  const auto it = std::find_if(
-    obstacles.cbegin(), obstacles.cend(),
-    [x,y](const SDL_Point& p){ return (x == p.x) && (y == p.y); });
+  auto it = std::find_if(obstacles.cbegin(), obstacles.cend(),
+                         [x,y](const auto& o){ return (x == o->get_x()) && (y == o->get_y()); });
   return it != obstacles.cend();
 }
 // STUDENT CODE (end)
@@ -113,7 +125,7 @@ void Game::Update()
     PlaceFood();
     // Grow snake and increase speed.
     snake.GrowBody();
-    snake.speed += 0.02;
+    snake.speed += 0.01;
   }
 }
 

@@ -3,7 +3,8 @@
 
 #include <memory>
 #include <random>
-#include <set>
+#include <vector>
+#include "obstacle.h"
 #include "sdl_util.h"
 #include "snake.h"
 #include "controller.h"
@@ -31,7 +32,7 @@ private:
   // STUDENT CODE (begin)
   std::unique_ptr<Scoreboard> scoreboard;
   int nb_obstacles;
-  std::set<SDL_Point> obstacles;
+  std::vector<std::unique_ptr<ObstacleBase>> obstacles;
   // STUDENT CODE (end)
 
   std::random_device dev;

@@ -1,7 +1,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#include <SDL_rect.h>
+#include <SDL.h>
 #include <vector>
 
 // STUDENT CODE: forward declaration to avoid include cycle
