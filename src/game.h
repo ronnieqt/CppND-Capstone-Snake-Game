@@ -10,7 +10,7 @@
 #include "renderer.h"
 #include "scoreboard.h"
 
-class Game
+class Game : public std::enable_shared_from_this<Game>
 {
 public:
   Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles);
@@ -21,15 +21,22 @@ public:
 
   int GetScore() const;
   int GetSize() const;
-  std::string GetUsername() const;
 
-  bool ObstacleCell(int x, int y) const;  // STUDENT CODE
+  // STUDENT CODE (begin)
+  std::string GetUsername() const;
+  bool IsRunning() const;  // check if (the game is running) and (the snake is alive)
+
+  std::shared_ptr<Game> get_shared_this() { return shared_from_this(); }
+
+  bool IsObstacle(int x, int y) const;  // check (x,y) is an obstacle or not
+  bool ObstacleCell(int x, int y);      // IsObstacle + mutex lock
+  // STUDENT CODE (end)
 
 private:
   Snake snake;
   SDL_Point food;
   // STUDENT CODE (begin)
-  std::unique_ptr<Scoreboard> scoreboard;
+  Scoreboard scoreboard;
   int nb_obstacles;
   std::vector<std::unique_ptr<ObstacleBase>> obstacles;
   // STUDENT CODE (end)
@@ -39,6 +46,7 @@ private:
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
 
+  bool running{false};
   int score{0};
 
   void PlaceFood();

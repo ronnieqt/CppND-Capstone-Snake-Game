@@ -5,36 +5,37 @@
 #include <algorithm>
 #include <memory>
 #include <iostream>
+#include <mutex>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
   : snake(this, grid_width, grid_height)
-  , scoreboard{std::make_unique<Scoreboard>()}  // STUDENT CODE
+  , scoreboard()  // STUDENT CODE
   , nb_obstacles{nb_obstacles}
   , engine(dev())
   , random_w(0, static_cast<int>(grid_width - 1))
   , random_h(0, static_cast<int>(grid_height - 1))
-{
-  PlaceObstacles();
-  PlaceFood();
-}
+{}
 
 // STUDENT CODE (begin)
 Game::~Game()
 {
-  scoreboard->UpdateScore(score);
-  scoreboard->WriteToTxt();
+  scoreboard.UpdateScore(score);
+  scoreboard.WriteToTxt();
 }
 // STUDENT CODE (end)
 
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration)
 {
+  PlaceObstacles();
+  PlaceFood();
+
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  bool running = true;
+  running = true;
 
   // STUDENT CODE (begin)
   for (const auto &obst : obstacles) {
@@ -58,7 +59,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(GetUsername(), score, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -100,13 +101,26 @@ void Game::PlaceObstacles()
       }
     }
   }
+
+  obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 8));
+  obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 9));
+  for (const auto &o : obstacles) {
+    std::cout << "Obstacle(" << o->get_id() << ") at "
+              << "(" << o->get_x() << "," << o->get_y() << ")\n";
+  }
 }
 
-bool Game::ObstacleCell(int x, int y) const
+bool Game::IsObstacle(int x, int y) const
 {
   auto it = std::find_if(obstacles.cbegin(), obstacles.cend(),
                          [x,y](const auto& o){ return (x == o->get_x()) && (y == o->get_y()); });
   return it != obstacles.cend();
+}
+
+bool Game::ObstacleCell(int x, int y)
+{
+  std::lock_guard<std::mutex> lck(ObstacleBase::m_mtx);
+  return IsObstacle(x, y);
 }
 // STUDENT CODE (end)
 
@@ -131,4 +145,5 @@ void Game::Update()
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
-std::string Game::GetUsername() const { return scoreboard->GetUsername(); }
+bool Game::IsRunning() const { return running && snake.alive; }
+std::string Game::GetUsername() const { return scoreboard.GetUsername(); }
