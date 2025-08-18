@@ -9,6 +9,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <utility>
 #include <vector>
 
 // ============================================================
@@ -68,7 +69,7 @@ public:
     , m_grid_width{grid_width}
     , m_grid_height{grid_height}
     , m_direction{static_cast<Direction>(m_rand(m_eng))}
-    , m_speed{0.1}
+    , m_speed{0.125}
   {}
   ~MovingObstacle()
   {
@@ -81,11 +82,12 @@ public:
   }
 
 private:
-  void update();       // update moving obstacle position
-  void next();         // next move of the obstacle
-  int next_x() const;  // next position.x following m_direction
-  int next_y() const;  // next position.y following m_direction
-  // TODO: choose direction is a smart way
+  // core functions
+  void update();  // update moving obstacle position
+  void next();    // next move of the obstacle
+  // utils
+  std::pair<int, int> next_position() const;  // position next to (m_x,m_y) following m_direction
+  void turn_around();                         // flip direction (up<->down, left<->right)
 
 private:
   std::random_device m_dev;
