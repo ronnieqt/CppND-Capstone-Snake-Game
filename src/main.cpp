@@ -12,9 +12,12 @@ int main()
   constexpr std::size_t kScreenHeight{640};
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
-  constexpr int nbObstacles{static_cast<int>(0.012*kGridWidth*kGridWidth)};  // STUDENT CODE
+  // STUDENT CODE (begin)
+  constexpr int nbObstacles{static_cast<int>(0.015*kGridWidth*kGridWidth)};
+  constexpr float pctMovingObstacles{0.23};
+  // STUDENT CODE (end)
 
-  auto game = std::make_shared<Game>(kGridWidth, kGridHeight, nbObstacles);
+  auto game = std::make_shared<Game>(kGridWidth, kGridHeight, nbObstacles, pctMovingObstacles);
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
 

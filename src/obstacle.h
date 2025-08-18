@@ -60,12 +60,14 @@ class MovingObstacle : public ObstacleBase
 public:
   enum class Direction { up, down, left, right };
 
-  MovingObstacle(std::shared_ptr<Game> game, int x, int y)
+  MovingObstacle(std::shared_ptr<Game> game, std::size_t grid_width, std::size_t grid_height, int x, int y)
     : ObstacleBase(x, y)
     , m_eng(m_dev())
     , m_rand(0, 3)
     , m_game{game}
-    , m_direction{static_cast<Direction>(m_rand(m_eng))}  // TODO: randomize initial direction
+    , m_grid_width{grid_width}
+    , m_grid_height{grid_height}
+    , m_direction{static_cast<Direction>(m_rand(m_eng))}
     , m_speed{0.1}
   {}
   ~MovingObstacle()
@@ -91,6 +93,8 @@ private:
   std::uniform_int_distribution<int> m_rand;
 
   std::shared_ptr<Game> m_game;
+  std::size_t m_grid_width;
+  std::size_t m_grid_height;
   std::vector<std::thread> m_threads;
   Direction m_direction;
   float m_speed;

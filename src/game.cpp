@@ -3,14 +3,18 @@
 #include "scoreboard.h"
 #include <SDL_rect.h>
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <iostream>
 #include <mutex>
 
-Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles)
+Game::Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles, float pct_moving_obstacles)
   : snake(this, grid_width, grid_height)
   , scoreboard()  // STUDENT CODE
+  , grid_width{grid_width}
+  , grid_height{grid_height}
   , nb_obstacles{nb_obstacles}
+  , pct_moving_obstacles{pct_moving_obstacles}
   , engine_i(dev())
   , random_w(0, static_cast<int>(grid_width - 1))
   , random_h(0, static_cast<int>(grid_height - 1))
@@ -92,8 +96,8 @@ void Game::PlaceObstacles()
       x = random_w(engine_i);
       y = random_h(engine_i);
       if (!ObstacleCell(x, y)) {  // obstacles are placed before food and snake
-        if (random_f(engine_f) < 0.2) {  // FIXME: make this param configurable
-          obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), x, y));
+        if (random_f(engine_f) < pct_moving_obstacles) {
+          obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), grid_width, grid_height, x, y));
         }
         else {
           obstacles.emplace_back(std::make_unique<FixedObstacle>(x, y));
@@ -101,13 +105,6 @@ void Game::PlaceObstacles()
         break;
       }
     }
-  }
-
-  obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 8));
-  // obstacles.emplace_back(std::make_unique<MovingObstacle>(get_shared_this(), 10, 9));
-  for (const auto &o : obstacles) {
-    std::cout << "Obstacle(" << o->get_id() << ") at "
-              << "(" << o->get_x() << "," << o->get_y() << ")\n";
   }
 }
 

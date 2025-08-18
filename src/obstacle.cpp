@@ -8,7 +8,6 @@
 #include <iostream>
 
 /* FIXME: todo list
- * pass in frame width and height
  * choose directions randomly after hitting another obstacle
  * randomly (for direction) initialize moving obstacles
  */
@@ -53,8 +52,6 @@ int MovingObstacle::next_y() const
 
 void MovingObstacle::update()
 {
-  std::cout << "Thread: " << std::this_thread::get_id() << "\n";
-  std::cout << "Obstacle(" << get_id() << "): " << get_x() << ", " << get_y() << "\n";
   while (m_game->IsRunning()) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     next();
@@ -98,9 +95,9 @@ void MovingObstacle::next()
   case Direction::right:
     m_x += m_speed; break;
   }
-  // FIXME: improve
-  m_x = fmod(m_x + 32, 32);
-  m_y = fmod(m_y + 32, 32);
+ 
+  m_x = fmod(m_x + m_grid_width, m_grid_width);
+  m_y = fmod(m_y + m_grid_height, m_grid_height);
 }
 
 // ============================================================
