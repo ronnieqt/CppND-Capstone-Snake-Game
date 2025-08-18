@@ -14,7 +14,7 @@ class Game : public std::enable_shared_from_this<Game>
 {
 public:
   Game(std::size_t grid_width, std::size_t grid_height, int nb_obstacles, float pct_moving_obstacles);
-  ~Game() = default;  // FIXME: why we cannot see ~Game() called in main thread?
+  ~Game() = default;
 
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);

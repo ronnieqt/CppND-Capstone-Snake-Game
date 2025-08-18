@@ -8,11 +8,6 @@
 #include <iostream>
 #include <utility>
 
-/* FIXME: todo list
- * choose directions randomly after hitting another obstacle
- * randomly (for direction) initialize moving obstacles
- */
-
 // ============================================================
 // init static variables
 
