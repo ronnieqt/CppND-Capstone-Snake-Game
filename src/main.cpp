@@ -13,8 +13,8 @@ int main()
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
   // STUDENT CODE (begin)
-  constexpr int nbObstacles{static_cast<int>(0.015*kGridWidth*kGridWidth)};
-  constexpr float pctMovingObstacles{0.23};
+  constexpr int nbObstacles{static_cast<int>(0.02*kGridWidth*kGridWidth)};
+  constexpr float pctMovingObstacles{0.25};
   // STUDENT CODE (end)
 
   auto game = std::make_shared<Game>(kGridWidth, kGridHeight, nbObstacles, pctMovingObstacles);
